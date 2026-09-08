@@ -27,7 +27,7 @@ from sarvamai import SarvamAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_neo4j import Neo4jVector, Neo4jGraph
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 
 load_dotenv()
 
@@ -194,28 +194,24 @@ async def lifespan(app: FastAPI):
     try:
         logging.info("🚀 Initializing...")
         
-        # Embedding model - using OpenAI embeddings (no local model loading)
+        # Embedding model - keep the existing Neo4j index dimensionality.
         start = time.time()
-        openai_api_key = os.getenv("OPENAI_API_KEY")
-        if not openai_api_key:
-            raise ValueError("OPENAI_API_KEY not set")
+        gemini_api_key = os.getenv("GEMINI_API_KEY")
+        if not gemini_api_key:
+            raise ValueError("GEMINI_API_KEY not set")
         
-        embedding_model = OpenAIEmbeddings(
-            api_key=openai_api_key,
-            model="text-embedding-3-small",
-            dimensions=384  # Match your Neo4j vector index dimensions
+        embedding_model = GoogleGenerativeAIEmbeddings(
+            google_api_key=gemini_api_key,
+            model="models/gemini-embedding-001",
+            output_dimensionality=384
         )
         app.state.embedding_model = embedding_model
         logging.info(f"✅ Embeddings initialized ({time.time()-start:.2f}s)")
         
         # LLM with optimized settings
-        openai_api_key = os.getenv("OPENAI_API_KEY")
-        if not openai_api_key:
-            raise ValueError("OPENAI_API_KEY not set")
-        
-        llm_instance = ChatOpenAI(
-            api_key=openai_api_key,
-            model="gpt-5.2",
+        llm_instance = ChatGoogleGenerativeAI(
+            google_api_key=gemini_api_key,
+            model="gemini-2.5-flash",
             temperature=0,
             max_tokens=512,  # Reduced
             timeout=15,

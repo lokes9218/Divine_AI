@@ -461,7 +461,10 @@ const backendReady = ref(false)
 async function checkBackendHealth() {
   const maxRetries = 60 // 60 attempts * 2 seconds = 2 minutes max
   let retryCount = 0
-  const BACKEND_HEALTH_URL = 'https://mb-aisage.onrender.com/'
+  
+  const BACKEND_HEALTH_URL = 'http://127.0.0.1:8001'
+
+  
   
   while (retryCount < maxRetries) {
     try {
