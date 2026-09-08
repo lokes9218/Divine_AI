@@ -69,7 +69,7 @@ For complete deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 1. **Clone and navigate to the project**:
 ```bash
-git clone https://github.com/sidagarwal04/mahabharata-genai.git
+git clone https://github.com/lokes9218/Divine_AI.git
 cd mahabharata-genai/backend
 ```
 
