@@ -1,4 +1,5 @@
 Dive into the timeless wisdom of an ancient Indian epic! Ask questions, explore characters, unravel mysteries, and gain insights from the vast knowledge powered by AI and graph databases.
+<img width="1917" height="971" alt="image" src="https://github.com/user-attachments/assets/7d9da36c-dfff-46cd-8dce-2c11fbebcaf8" />
 
 ## 🌟 Features
 
