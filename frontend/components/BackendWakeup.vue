@@ -3,11 +3,11 @@
     <div class="wakeup-content">
       <!-- Logo -->
       <!-- <div class="wakeup-logo-section">
-        <img src="/logo.png" alt="Mahabharata Wisdom Sag Logo" class="wakeup-logo" />
+        <img src="/logo.png" alt="mahabharata wisdom mentor Logo" class="wakeup-logo" />
       </div> -->
       
       <!-- Title -->
-      <h1 class="wakeup-title">Mahabharata Wisdom Sag</h1>
+      <h1 class="wakeup-title">mahabharata wisdom mentor</h1>
       
       <!-- Loading Message -->
       <div class="wakeup-message">
@@ -42,7 +42,7 @@ const props = defineProps({
 const loadingStages = [
   'Awakening the cosmic service...',
   'Connecting to the ancient wisdom library...',
-  'Initializing the AI Sage...',
+  'Initializing the AI WISDOM MENTOR...',
   'Preparing the knowledge base...',
   'Channeling the divine insights...'
 ]

@@ -14,7 +14,7 @@
             <button @click="clearChat" class="header-brand-link" :disabled="isLoading">
               <h1 class="header-title">
                 <img src="/logo.png" alt="Logo" />
-                Mahabharata Wisdom Sag
+                mahabharata wisdom mentor
               </h1>
               <p class="header-subtitle">
                 Voyage through the cosmic tapestry of the Great Epic
@@ -51,7 +51,7 @@
         <!-- Chat Messages -->
         <div ref="chatContainer" class="chat-messages">
           <div v-if="messages.length === 0" class="welcome-message">
-            <h3 class="welcome-title">Seek Wisdom from the AI Sage</h3>
+            <h3 class="welcome-title">Seek Wisdom from the AI WISDOM MENTOR</h3>
             <p class="welcome-description">
               Journey through the greatest epic ever told. Discover timeless teachings on dharma, explore the depths of human nature, 
               and unravel the mysteries of divine cosmic law through AI-powered insights.
@@ -158,7 +158,7 @@
         <div class="footer-credits">
           <span class="footer-powered">Powered by GenAI • Built with ❤️ for seekers of ancient wisdom</span>
           <div class="footer-copyright">
-            © 2026 Mahabharata Wisdom Sag • Built with ❤️ by Lokeswaran S
+            © 2026 mahabharata wisdom mentor • Built with ❤️ by Lokeswaran S
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@
             <div class="modal-brand">
               <img :src="logoImage" alt="Mahabharata AI Logo" class="modal-logo" />
               <div class="modal-brand-text">
-                <h2 class="modal-title">Mahabharata Wisdom Sag</h2>
+                <h2 class="modal-title">mahabharata wisdom mentor</h2>
                 <p class="modal-tagline">Dive into the timeless wisdom of an ancient Indian epic</p>
               </div>
             </div>
@@ -210,7 +210,7 @@
                 <h3 class="section-title">The Purpose</h3>
                 <p class="section-text">
                   In an age of moral complexity, the Mahabharata's teachings remain remarkably 
-                  relevant. This AI sage serves as a bridge between ancient wisdom and modern 
+                  relevant. This AI WISDOM MENTOR serves as a bridge between ancient wisdom and modern 
                   inquiries, helping you navigate life's challenges through dharmic understanding.
                 </p>
               </div>
@@ -412,7 +412,7 @@ const showDharmaModal = ref(false)
 
 // Loading messages system
 const loadingMessages = ref([
-  'AI Sage is recalling....',
+  'AI WISDOM MENTOR is recalling....',
   'Consulting the ancient texts....',
   'Seeking wisdom from the cosmos....',
   'Channeling dharmic insights....',
@@ -474,7 +474,7 @@ async function checkBackendHealth() {
       
       if (response.ok) {
         const data = await response.json()
-        if (data.message === 'Mahabharata Wisdom Sag - Ultra Optimized') {
+        if (data.message === 'mahabharata wisdom mentor - Ultra Optimized') {
           backendReady.value = true
           return true
         }
