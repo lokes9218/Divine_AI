@@ -20,26 +20,45 @@
       </div>
       
       <!-- Assistant Actions Below Content -->
-      <div v-if="message.role === 'assistant' && !message.isError" class="mt-4" style="padding-left: 7rem;">
+      <div v-if="message.role === 'assistant' && !message.isError" class="mt-4 flex flex-wrap gap-2" style="padding-left: 7rem;">
+        <!-- English Audio Button -->
         <button
-          @click="$emit('listen-hindi', message)"
+          @click="$emit('listen-audio', message, 'english')"
           class="listen-btn"
-          :class="{ 'playing': isPlaybackActive, 'generating': isGeneratingAudio }"
+          :class="{ 'playing': isEnglishPlaybackActive, 'generating': isGeneratingEnglishAudio }"
         >
-          <svg v-if="isGeneratingAudio" class="animate-spin h-3.5 w-3.5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg v-if="isGeneratingEnglishAudio" class="animate-spin h-3.5 w-3.5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <svg v-else-if="!isPlaybackActive" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-else-if="!isEnglishPlaybackActive" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
           </svg>
           <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6" />
           </svg>
-          <span>{{ isGeneratingAudio ? 'Engraving...' : (isPlaybackActive ? 'Pause' : 'Listen in Hindi') }}</span>
+          <span>{{ isGeneratingEnglishAudio ? 'Engraving...' : (isEnglishPlaybackActive ? 'Pause English' : 'Listen in English') }}</span>
+        </button>
+
+        <!-- Tamil Audio Button -->
+        <button
+          @click="$emit('listen-audio', message, 'tamil')"
+          class="listen-btn"
+          :class="{ 'playing': isTamilPlaybackActive, 'generating': isGeneratingTamilAudio }"
+        >
+          <svg v-if="isGeneratingTamilAudio" class="animate-spin h-3.5 w-3.5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <svg v-else-if="!isTamilPlaybackActive" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          </svg>
+          <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6" />
+          </svg>
+          <span>{{ isGeneratingTamilAudio ? 'Engraving...' : (isTamilPlaybackActive ? 'Pause Tamil' : 'Listen in Tamil') }}</span>
         </button>
       </div>
-      
 
     </div>
   </div>
@@ -57,6 +76,10 @@ const props = defineProps({
     type: String,
     default: null
   },
+  activeAudioLang: {
+    type: String,
+    default: null
+  },
   isAudioPlaying: {
     type: Boolean,
     default: false
@@ -64,17 +87,29 @@ const props = defineProps({
   generatingAudioId: {
     type: String,
     default: null
+  },
+  generatingAudioLang: {
+    type: String,
+    default: null
   }
 })
 
-const emit = defineEmits(['listen-hindi'])
+const emit = defineEmits(['listen-audio'])
 
-const isPlaybackActive = computed(() => {
-  return props.activeAudioId === props.message.id && props.isAudioPlaying
+const isEnglishPlaybackActive = computed(() => {
+  return props.activeAudioId === props.message.id && props.activeAudioLang === 'english' && props.isAudioPlaying
 })
 
-const isGeneratingAudio = computed(() => {
-  return props.generatingAudioId === props.message.id
+const isTamilPlaybackActive = computed(() => {
+  return props.activeAudioId === props.message.id && props.activeAudioLang === 'tamil' && props.isAudioPlaying
+})
+
+const isGeneratingEnglishAudio = computed(() => {
+  return props.generatingAudioId === props.message.id && props.generatingAudioLang === 'english'
+})
+
+const isGeneratingTamilAudio = computed(() => {
+  return props.generatingAudioId === props.message.id && props.generatingAudioLang === 'tamil'
 })
 
 const bubbleClass = computed(() => {

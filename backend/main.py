@@ -45,19 +45,19 @@ NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "mahabharata")
 
-CHAT_TOKEN_CUT_OFF = 50
+CHAT_TOKEN_CUT_OFF = 10
 MAX_HISTORY_MESSAGES = 4
 
 # Optimized retrieval query
 VECTOR_GRAPH_SEARCH_QUERY = """
 WITH node as chunk, score
-WHERE score > 0.2
-MATCH (chunk)-[:PART_OF]->(d:Document)
+WHERE score > 0.1
+OPTIONAL MATCH (chunk)-[:PART_OF]->(d:Document)
 RETURN
    chunk.text as text,
    score,
    {source: COALESCE(d.fileName, d.url, 'unknown')} AS metadata
-LIMIT 30
+LIMIT 15
 """
 
 CHAT_SYSTEM_TEMPLATE = """
@@ -132,6 +132,22 @@ def format_documents_fast(documents, cutoff=CHAT_TOKEN_CUT_OFF):
     context = "\n\n".join(formatted_parts)
     return context, list(sources)
 
+def extract_text_from_ai_response(content):
+    """Safely extract string content from LangChain AI response."""
+    if isinstance(content, str):
+        return content
+    elif isinstance(content, list):
+        text_parts = []
+        for item in content:
+            if isinstance(item, str):
+                text_parts.append(item)
+            elif isinstance(item, dict) and "text" in item:
+                text_parts.append(item["text"])
+            elif hasattr(item, "text"):
+                text_parts.append(item.text)
+        return "".join(text_parts)
+    return str(content)
+
 def get_total_tokens_fast(ai_response):
     try:
         return ai_response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
@@ -154,8 +170,8 @@ def process_documents_fast(docs, question, messages, llm):
         logging.info(f"📊 Context: ~{context_tokens} tokens, History: ~{history_tokens} tokens")
         logging.info(f"⏱️  Formatting: {format_time:.3f}s")
         
-        # Build prompt with limited history
-        recent_messages = messages[-MAX_HISTORY_MESSAGES:] if len(messages) > MAX_HISTORY_MESSAGES else messages[:-1]
+        # Build prompt with history
+        recent_messages = messages[-MAX_HISTORY_MESSAGES:]
         
         prompt = ChatPromptTemplate.from_messages([
             ("system", CHAT_SYSTEM_TEMPLATE),
@@ -175,12 +191,13 @@ def process_documents_fast(docs, question, messages, llm):
         logging.info(f"⏱️  LLM generation: {gen_time:.3f}s")
         
         total_time = time.time() - start_time
+        response_text = extract_text_from_ai_response(ai_response.content)
         
         return {
-            'message': ai_response.content,
+            'message': response_text,
             'sources': sources,
             'total_tokens': get_total_tokens_fast(ai_response),
-            'model': "gpt-5.2",
+            'model': "gemini-3.6-flash",
             'time_taken': total_time
         }
         
@@ -211,11 +228,11 @@ async def lifespan(app: FastAPI):
         # LLM with optimized settings
         llm_instance = ChatGoogleGenerativeAI(
             google_api_key=gemini_api_key,
-            model=os.getenv("GEMINI_CHAT_MODEL", "gemini-3.6-flash"),
-            temperature=0,
-            max_tokens=512,  # Reduced
-            timeout=15,
-            max_retries=1
+            model="gemini-3.6-flash",
+            temperature=0.2,
+            max_tokens=1024,
+            timeout=60,
+            max_retries=2
         )
         app.state.llm = llm_instance
         logging.info("✅ LLM initialized")
@@ -231,25 +248,29 @@ async def lifespan(app: FastAPI):
         logging.info("✅ Neo4j connected")
         
         # Retriever
-        vector_store = Neo4jVector.from_existing_index(
-            embedding=embedding_model,
-            url=NEO4J_URI,
-            username=NEO4J_USERNAME,
-            password=NEO4J_PASSWORD,
-            database=NEO4J_DATABASE,
-            index_name="vector",
-            node_label="Chunk",
-            text_node_property="text",
-            embedding_node_property="embedding",
-            retrieval_query=VECTOR_GRAPH_SEARCH_QUERY
-        )
-        
-        retriever = vector_store.as_retriever(
-            search_type="similarity_score_threshold",
-            search_kwargs={"score_threshold": 0.2, "k": 30}
-        )
-        app.state.retriever = retriever
-        logging.info("✅ Retriever ready")
+        try:
+            vector_store = Neo4jVector.from_existing_index(
+                embedding=embedding_model,
+                url=NEO4J_URI,
+                username=NEO4J_USERNAME,
+                password=NEO4J_PASSWORD,
+                database=NEO4J_DATABASE,
+                index_name="vector",
+                node_label="Chunk",
+                text_node_property="text",
+                embedding_node_property="embedding",
+                retrieval_query=VECTOR_GRAPH_SEARCH_QUERY
+            )
+            
+            retriever = vector_store.as_retriever(
+                search_type="similarity_score_threshold",
+                search_kwargs={"score_threshold": 0.1, "k": 30}
+            )
+            app.state.retriever = retriever
+            logging.info("✅ Retriever ready")
+        except Exception as ve:
+            logging.warning(f"⚠️ Vector retriever init warning (will retry on query): {ve}")
+            app.state.retriever = None
         
         # Start keep-alive thread for Render deployment
         if os.getenv('RENDER_EXTERNAL_URL'):
@@ -353,7 +374,15 @@ async def chat_endpoint(request: Request, chat_request: ChatRequest):
         
         # Retrieval
         retrieval_start = time.time()
-        docs = retriever.invoke(chat_request.message)
+        docs = []
+        try:
+            if retriever:
+                docs = retriever.invoke(chat_request.message)
+            else:
+                logging.warning("⚠️ Retriever not initialized, proceeding with empty context")
+        except Exception as re:
+            logging.warning(f"⚠️ Vector retrieval error or rate limit: {re}")
+            docs = []
         retrieval_time = time.time() - retrieval_start
         logging.info(f"⏱️  Retrieval: {retrieval_time:.3f}s ({len(docs)} docs)")
         
@@ -402,6 +431,97 @@ async def get_examples():
             "Who killed Dronacharya and how was he tricked into giving up his weapons?"
         ]
     }
+
+@app.post("/audio/english")
+async def generate_english_audio(request: AudioRequest):
+    """Audio generation endpoint for English using Sarvam AI."""
+    try:
+        if not request.text:
+            raise HTTPException(status_code=400, detail="No text provided")
+        text = request.text.split("(Model:")[0].strip() if "(Model:" in request.text else request.text
+        
+        SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
+        if not SARVAM_API_KEY:
+            raise HTTPException(status_code=500, detail="SARVAM_API_KEY not configured")
+        
+        client = SarvamAI(api_subscription_key=SARVAM_API_KEY)
+        tts_response = client.text_to_speech.convert(
+            text=text,
+            target_language_code="en-IN",
+            speaker="shubh",
+            pace=1.1,
+            speech_sample_rate=22050,
+            enable_preprocessing=True,
+            model="bulbul:v3-beta"
+        )
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as f:
+            if hasattr(tts_response, 'audios') and tts_response.audios:
+                audio_bytes = base64.b64decode(tts_response.audios[0])
+                f.write(audio_bytes)
+                audio_path = f.name
+                logging.info(f"Generated English audio file: {audio_path}")
+            else:
+                raise HTTPException(status_code=500, detail="No audio data received from TTS API")
+        
+        return FileResponse(
+            audio_path,
+            media_type="audio/mpeg",
+            filename="english_audio.mp3"
+        )
+    except Exception as e:
+        logging.error(f"❌ English Audio error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/audio/tamil")
+async def generate_tamil_audio(request: AudioRequest):
+    """Audio generation endpoint for Tamil using Sarvam AI."""
+    try:
+        if not request.text:
+            raise HTTPException(status_code=400, detail="No text provided")
+        text = request.text.split("(Model:")[0].strip() if "(Model:" in request.text else request.text
+        
+        SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
+        if not SARVAM_API_KEY:
+            raise HTTPException(status_code=500, detail="SARVAM_API_KEY not configured")
+        
+        client = SarvamAI(api_subscription_key=SARVAM_API_KEY)
+        translation_response = client.text.translate(
+            input=text,
+            source_language_code="en-IN",
+            target_language_code="ta-IN",
+            speaker_gender="Male",
+            mode="formal",
+            model="sarvam-translate:v1",
+            numerals_format="native"
+        )
+        translated_text = translation_response.translated_text
+        
+        tts_response = client.text_to_speech.convert(
+            text=translated_text,
+            target_language_code="ta-IN",
+            speaker="shubh",
+            pace=1.1,
+            speech_sample_rate=22050,
+            enable_preprocessing=True,
+            model="bulbul:v3-beta"
+        )
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as f:
+            if hasattr(tts_response, 'audios') and tts_response.audios:
+                audio_bytes = base64.b64decode(tts_response.audios[0])
+                f.write(audio_bytes)
+                audio_path = f.name
+                logging.info(f"Generated Tamil audio file: {audio_path}")
+            else:
+                raise HTTPException(status_code=500, detail="No audio data received from TTS API")
+        
+        return FileResponse(
+            audio_path,
+            media_type="audio/mpeg",
+            filename="tamil_audio.mp3"
+        )
+    except Exception as e:
+        logging.error(f"❌ Tamil Audio error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/audio/hindi")
 async def generate_hindi_audio(request: AudioRequest):

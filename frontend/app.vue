@@ -32,11 +32,11 @@
               <span class="nav-icon">⚖️</span>
               <span class="nav-text">Dharma</span>
             </a>
-            <a href="https://sidagarwal04.medium.com/list/mahabharatachatbot-cbf1d049d017" target="_blank" class="nav-link">
+            <a href="https://github.com/lokes9218/Divine_AI.git" target="_blank" class="nav-link">
               <span class="nav-icon">🏹</span>
               <span class="nav-text">Wisdom</span>
             </a>
-            <a href="https://github.com/sidagarwal04/mahabharata-genai" target="_blank" class="nav-link">
+            <a href="https://github.com/lokes9218/Divine_AI.git" target="_blank" class="nav-link">
               <span class="nav-icon">📖</span>
               <span class="nav-text">Repository</span>
             </a>
@@ -82,9 +82,11 @@
             <ChatMessage 
               :message="message" 
               :active-audio-id="activeAudioId"
+              :active-audio-lang="activeAudioLang"
               :is-audio-playing="isAudioPlaying"
               :generating-audio-id="generatingAudioId"
-              @listen-hindi="handleListenHindi"
+              :generating-audio-lang="generatingAudioLang"
+              @listen-audio="handleListenAudio"
             />
           </div>
           
@@ -156,7 +158,7 @@
         <div class="footer-credits">
           <span class="footer-powered">Powered by GenAI • Built with ❤️ for seekers of ancient wisdom</span>
           <div class="footer-copyright">
-            © 2026 Mahabharata AI Sage • <a href="https://meetsid.dev" target="_blank" class="footer-author">meetsid.dev</a> • Powered by <a href="https://netlify.com" target="_blank" class="footer-author">Netlify</a>
+            © 2026 Mahabharata AI Sage • Built with ❤️ by Lokeswaran S
           </div>
         </div>
       </div>
@@ -220,22 +222,18 @@
                 <span class="tech-header-icon">⚡</span>
                 <span class="tech-header-title">Powered By</span>
                 <span class="tech-header-text">
-                  GPT-5.2 intelligence, Neo4j knowledge graph, Sarvam AI's Indic support for translation and text-to-speech, and Google Antigravity IDE unite in a responsive design to 
-                  deliver fast, contextual answers rooted in the epic’s wisdom.
+                  Gemini intelligence, Neo4j knowledge graph, Sarvam AI's Indic support for translation and text-to-speech, and modern AI engineering unite to deliver fast, contextual answers.
                 </span>
               </div>
               <div class="tech-badges">
                 <span class="tech-badge">
-                  <img src="/about/openai.svg" alt="OpenAI" class="tech-logo" /> GPT-5.2
+                  Gemini 3.6 Flash
                 </span>
                 <span class="tech-badge">
-                  <img src="/about/neo4j.svg" alt="Neo4j" class="tech-logo" /> Neo4j
+                  Neo4j
                 </span>
                 <span class="tech-badge">
-                  <img src="/about/sarvam.webp" alt="Sarvam AI" class="tech-logo" /> Indic Support
-                </span>
-                <span class="tech-badge">
-                  <img src="/about/antigravity.webp" alt="Google Antigravity" class="tech-logo" /> Google Antigravity
+                  Sarvam AI
                 </span>
               </div>
             </div>
@@ -248,9 +246,8 @@
                   translators, and sages who have preserved this wisdom across millennia.</p>
                 </div>
                 <div class="credits-links">
-                  <p>📖 <a href="https://sidagarwal04.medium.com/list/mahabharatachatbot-cbf1d049d017" target="_blank" class="credit-link">Read the Blog Series</a></p>
-                  <p>💻 <a href="https://github.com/sidagarwal04/mahabharata-genai" target="_blank" class="credit-link">View Source Code</a></p>
-                  <p class="credits-author">Built with ❤️ by <a href="https://meetsid.dev" target="_blank" class="credit-link">meetsid.dev</a></p>
+                  <p>💻 <a href="https://github.com/lokes9218/Divine_AI.git" target="_blank" class="credit-link">View Source Code</a></p>
+                  <p class="credits-author">Built with ❤️ by <a href="https://github.com/lokes9218/Divine_AI.git" target="_blank" class="credit-link">Lokeswaran S</a></p>
                 </div>
               </div>
             </div>
@@ -410,7 +407,6 @@ const isTyping = ref(false)
 const chatContainer = ref(null)
 const audioPlayer = ref(null)
 const sessionId = ref('')
-const generatingAudioId = ref(null)
 const showAboutModal = ref(false)
 const showDharmaModal = ref(false)
 
@@ -445,7 +441,10 @@ watch(isTyping, (val) => {
 
 // Audio playback state
 const activeAudioId = ref(null)
+const activeAudioLang = ref(null)
 const isAudioPlaying = ref(false)
+const generatingAudioId = ref(null)
+const generatingAudioLang = ref(null)
 
 // Configuration
 const config = useRuntimeConfig()
@@ -464,8 +463,6 @@ async function checkBackendHealth() {
   
   const BACKEND_HEALTH_URL = 'http://127.0.0.1:8001'
 
-  
-  
   while (retryCount < maxRetries) {
     try {
       const response = await fetch(BACKEND_HEALTH_URL, {
@@ -477,25 +474,19 @@ async function checkBackendHealth() {
       
       if (response.ok) {
         const data = await response.json()
-        // Check if we got the expected message
         if (data.message === 'Mahabharata AI Sage - Ultra Optimized') {
           backendReady.value = true
           return true
         }
       }
     } catch (error) {
-      // Backend not ready yet, will retry
       console.log(`Backend health check attempt ${retryCount + 1} failed, retrying...`)
     }
     
     retryCount++
-    
-    // Wait 2 seconds before next retry
     await new Promise(resolve => setTimeout(resolve, 2000))
   }
   
-  // If we get here, backend didn't respond after max retries
-  // Show it as ready anyway to prevent infinite loading
   console.warn('Backend health check exceeded max retries, showing app anyway')
   backendReady.value = true
   return false
@@ -503,14 +494,9 @@ async function checkBackendHealth() {
 
 // Initialize session
 onMounted(async () => {
-  // Check backend health first before proceeding
   await checkBackendHealth()
-  
-  // Once backend is ready, initialize the app
   sessionId.value = generateUUID()
   await fetchExamples()
-  
-  // Add ESC key listener for modal
   document.addEventListener('keydown', handleKeyDown)
 })
 
@@ -522,7 +508,7 @@ watch(messages, async () => {
 // Cleanup event listener
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyDown)
-  stopLoadingMessages() // Clean up any running intervals
+  stopLoadingMessages()
 })
 
 // Handle ESC key press
@@ -563,10 +549,9 @@ async function fetchExamples() {
   try {
     const response = await fetch(`${API_BASE}/examples`)
     const data = await response.json()
-    examples.value = data.examples.slice(0, 6) // Show first 6 examples
+    examples.value = data.examples.slice(0, 6)
   } catch (error) {
     console.error('Failed to fetch examples:', error)
-    // Fallback examples
     examples.value = [
       "Why did the Mahabharata war happen?",
       "Who killed Karna, and why?",
@@ -591,9 +576,8 @@ async function sendMessage(message) {
   
   isLoading.value = true
   isTyping.value = true
-  startLoadingMessages() // Start rotating messages
+  startLoadingMessages()
   
-  // Add user message
   messages.value.push({
     id: generateUUID(),
     role: 'user',
@@ -621,7 +605,6 @@ async function sendMessage(message) {
     
     const data = await response.json()
     
-    // Add assistant response
     const assistantMessage = {
       id: generateUUID(),
       role: 'assistant',
@@ -630,14 +613,12 @@ async function sendMessage(message) {
       sources: data.sources || [],
       totalTokens: data.total_tokens || 0,
       timeTaken: data.time_taken || 0,
-      model: data.model || 'gpt-5.2'
+      model: data.model || 'gemini-3.6-flash',
+      audioUrls: {}
     }
     messages.value.push(assistantMessage)
     
     sessionId.value = data.session_id
-    
-    // Pre-generate audio in background without playing
-    handleListenHindi(assistantMessage, false)
     
   } catch (error) {
     console.error('Error sending message:', error)
@@ -650,22 +631,26 @@ async function sendMessage(message) {
   } finally {
     isLoading.value = false
     isTyping.value = false
-    stopLoadingMessages() // Stop rotating messages
+    stopLoadingMessages()
     await scrollToBottom()
   }
 }
 
-// Handle Hindi audio generation and playback
-async function handleListenHindi(message, autoplay = true) {
-  if (!message.content || generatingAudioId.value === message.id) return
+// Handle audio generation and playback for English and Tamil
+async function handleListenAudio(message, lang, autoplay = true) {
+  if (!message.content || (generatingAudioId.value === message.id && generatingAudioLang.value === lang)) return
   
-  // If message already has pre-generated audio, just play/toggle it
-  if (message.audioUrl) {
-    if (activeAudioId.value === message.id) {
+  if (!message.audioUrls) {
+    message.audioUrls = {}
+  }
+
+  if (message.audioUrls[lang]) {
+    if (activeAudioId.value === message.id && activeAudioLang.value === lang) {
       if (autoplay) toggleAudio()
     } else {
       activeAudioId.value = message.id
-      audioPlayer.value.src = message.audioUrl
+      activeAudioLang.value = lang
+      audioPlayer.value.src = message.audioUrls[lang]
       if (autoplay) {
         audioPlayer.value.play()
         isAudioPlaying.value = true
@@ -676,7 +661,11 @@ async function handleListenHindi(message, autoplay = true) {
 
   try {
     generatingAudioId.value = message.id
-    const response = await fetch(`${API_BASE}/audio/hindi`, {
+    generatingAudioLang.value = lang
+
+    const endpoint = lang === 'tamil' ? `${API_BASE}/audio/tamil` : `${API_BASE}/audio/english`
+    
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -691,23 +680,24 @@ async function handleListenHindi(message, autoplay = true) {
     const audioBlob = await response.blob()
     const audioUrl = URL.createObjectURL(audioBlob)
     
-    // Store URL on message so it's ready for instant playback
-    message.audioUrl = audioUrl
+    message.audioUrls[lang] = audioUrl
     
-    // Only play if autoplay is requested (manual clicks)
     if (autoplay && audioPlayer.value) {
       activeAudioId.value = message.id
+      activeAudioLang.value = lang
       audioPlayer.value.src = audioUrl
       audioPlayer.value.play()
       isAudioPlaying.value = true
     }
     
   } catch (error) {
-    console.error('Error generating Hindi audio:', error)
-    alert('Sorry, there was an error generating the Hindi audio.')
+    console.error(`Error generating ${lang} audio:`, error)
+    alert(`Sorry, there was an error generating the ${lang} audio.`)
     activeAudioId.value = null
+    activeAudioLang.value = null
   } finally {
     generatingAudioId.value = null
+    generatingAudioLang.value = null
   }
 }
 
@@ -735,9 +725,7 @@ function handleAudioPause() {
 function audioEnded() {
   isAudioPlaying.value = false
   activeAudioId.value = null
-  if (audioPlayer.value && audioPlayer.value.src) {
-    URL.revokeObjectURL(audioPlayer.value.src)
-  }
+  activeAudioLang.value = null
 }
 
 // Clear chat
