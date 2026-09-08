@@ -79,7 +79,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1a1f35 50%, #2a1a3a 100%);
+  background: linear-gradient(135deg, #172a46 0%, #263f63 55%, #c9a227 140%);
   padding: 20px;
 }
 
@@ -103,7 +103,7 @@ onUnmounted(() => {
 .wakeup-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #22d3ee;
+  color: #f7f5f0;
   margin-bottom: 20px;
   letter-spacing: 0.05em;
   animation: fadeIn 0.8s ease-out 0.2s both;
@@ -116,7 +116,7 @@ onUnmounted(() => {
 
 .wakeup-text {
   font-size: 1.25rem;
-  color: #e0f2fe;
+  color: #ffffff;
   line-height: 1.6;
   font-weight: 500;
 }
@@ -130,15 +130,15 @@ onUnmounted(() => {
   width: 50px;
   height: 50px;
   margin: 0 auto 20px;
-  border: 3px solid rgba(34, 211, 238, 0.2);
-  border-top-color: #22d3ee;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #c9a227;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .wakeup-status {
   font-size: 0.95rem;
-  color: #a8d8ea;
+  color: #f1e4b2;
   min-height: 24px;
   animation: fadeInText 0.5s ease-in-out;
 }

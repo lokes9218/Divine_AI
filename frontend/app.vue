@@ -553,13 +553,17 @@ async function fetchExamples() {
   } catch (error) {
     console.error('Failed to fetch examples:', error)
     examples.value = [
-      "Why did the Mahabharata war happen?",
-      "Who killed Karna, and why?",
-      "Why did the Pandavas have to go live in the forest for 12 years?",
-      "Who was the wife of all five Pandavas, and how did that marriage come to be?",
-      "What was the role of Krishna during the Kurukshetra war? Did he fight?",
-      "Describe the relationship between Karna and Kunti. How did it affect the war?"
-    ]
+       
+            "Who was Satyaki?",
+            "Why did the Pandavas have to go live in the forest for 12 years?",
+            "Why was Arjuna considered an unbeatable and undefeated warrior?",
+            "What was the role of Krishna during the Kurukshetra war? Did he fight?",
+            "Describe the relationship between Karna and Kunti. How did it affect the war?",
+            "What were Arjuna’s greatest battles?",
+            "What was Draupadi’s greatest strength?",
+            "Why did Bhishma take a vow of celibacy, and how did that impact the throne of Hastinapur?",
+            "How powerful was Abhimanyu against twenty warriors?",
+        ]
   }
 }
 
