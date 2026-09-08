@@ -211,7 +211,7 @@ async def lifespan(app: FastAPI):
         # LLM with optimized settings
         llm_instance = ChatGoogleGenerativeAI(
             google_api_key=gemini_api_key,
-            model="gemini-2.5-flash",
+            model=os.getenv("GEMINI_CHAT_MODEL", "gemini-3.6-flash"),
             temperature=0,
             max_tokens=512,  # Reduced
             timeout=15,
