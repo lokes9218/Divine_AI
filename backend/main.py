@@ -318,7 +318,7 @@ def keep_alive():
         time.sleep(900)
 
 app = FastAPI(
-    title="Mahabharata AI Sage - Ultra Optimized",
+    title="Mahabharata Wisdom Sage AI - Ultra Optimized",
     version="3.0.0",
     lifespan=lifespan
 )
@@ -348,7 +348,7 @@ class AudioRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Mahabharata AI Sage - Ultra Optimized"}
+    return {"message": "Mahabharata Wisdom Sage AI - Ultra Optimized"}
 
 @app.get("/health")
 async def health_check():

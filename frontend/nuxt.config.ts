@@ -20,11 +20,11 @@ export default defineNuxtConfig({
         { name: 'author', content: 'Lokeswaran S' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://mb-aisage.netlify.app/' },
-        { property: 'og:title', content: 'Mahabharata AI Sage' },
+        { property: 'og:title', content: 'Mahabharata Wisdom Sage AI' },
         { property: 'og:description', content: 'Explore the legends, warriors, and dharma of the Kurukshetra with our AI-powered Mahabharata Sage.' },
         { property: 'og:image', content: 'https://raw.githubusercontent.com/lokes9218/Divine_AI/main/frontend/public/images/mb_2_0.png' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: 'Mahabharata AI Sage' },
+        { name: 'twitter:title', content: 'Mahabharata Wisdom Sage AI' },
         { name: 'twitter:description', content: 'Explore the legends, warriors, and dharma of the Kurukshetra.' },
         { name: 'twitter:image', content: 'https://raw.githubusercontent.com/lokes9218/Divine_AI/main/frontend/public/images/mb_2_0.png' }
       ],
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
             "@type": "Organization",
             "url": "https://mb-aisage.netlify.app/",
             "logo": "https://raw.githubusercontent.com/lokes9218/Divine_AI/main/frontend/public/images/mb_2_0.png",
-            "name": "Mahabharata AI Sage"
+            "name": "Mahabharata Wisdom Sage AI"
           }),
           type: 'application/ld+json'
         }

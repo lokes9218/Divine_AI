@@ -14,7 +14,7 @@
             <button @click="clearChat" class="header-brand-link" :disabled="isLoading">
               <h1 class="header-title">
                 <img src="/logo.png" alt="Logo" />
-                MAHABHARATA AI SAGE
+                Mahabharata Wisdom Sage AI
               </h1>
               <p class="header-subtitle">
                 Voyage through the cosmic tapestry of the Great Epic
@@ -158,7 +158,7 @@
         <div class="footer-credits">
           <span class="footer-powered">Powered by GenAI • Built with ❤️ for seekers of ancient wisdom</span>
           <div class="footer-copyright">
-            © 2026 Mahabharata AI Sage • Built with ❤️ by Lokeswaran S
+            © 2026 Mahabharata Wisdom Sage AI • Built with ❤️ by Lokeswaran S
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@
             <div class="modal-brand">
               <img :src="logoImage" alt="Mahabharata AI Logo" class="modal-logo" />
               <div class="modal-brand-text">
-                <h2 class="modal-title">Mahabharata AI Sage</h2>
+                <h2 class="modal-title">Mahabharata Wisdom Sage AI</h2>
                 <p class="modal-tagline">Dive into the timeless wisdom of an ancient Indian epic</p>
               </div>
             </div>
@@ -474,7 +474,7 @@ async function checkBackendHealth() {
       
       if (response.ok) {
         const data = await response.json()
-        if (data.message === 'Mahabharata AI Sage - Ultra Optimized') {
+        if (data.message === 'Mahabharata Wisdom Sage AI - Ultra Optimized') {
           backendReady.value = true
           return true
         }
