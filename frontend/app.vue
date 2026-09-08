@@ -14,7 +14,7 @@
             <button @click="clearChat" class="header-brand-link" :disabled="isLoading">
               <h1 class="header-title">
                 <img src="/logo.png" alt="Logo" />
-                Mahabharata Wisdom Sage AI
+                Mahabharata Wisdom Sag
               </h1>
               <p class="header-subtitle">
                 Voyage through the cosmic tapestry of the Great Epic
@@ -158,7 +158,7 @@
         <div class="footer-credits">
           <span class="footer-powered">Powered by GenAI • Built with ❤️ for seekers of ancient wisdom</span>
           <div class="footer-copyright">
-            © 2026 Mahabharata Wisdom Sage AI • Built with ❤️ by Lokeswaran S
+            © 2026 Mahabharata Wisdom Sag • Built with ❤️ by Lokeswaran S
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@
             <div class="modal-brand">
               <img :src="logoImage" alt="Mahabharata AI Logo" class="modal-logo" />
               <div class="modal-brand-text">
-                <h2 class="modal-title">Mahabharata Wisdom Sage AI</h2>
+                <h2 class="modal-title">Mahabharata Wisdom Sag</h2>
                 <p class="modal-tagline">Dive into the timeless wisdom of an ancient Indian epic</p>
               </div>
             </div>
@@ -474,7 +474,7 @@ async function checkBackendHealth() {
       
       if (response.ok) {
         const data = await response.json()
-        if (data.message === 'Mahabharata Wisdom Sage AI - Ultra Optimized') {
+        if (data.message === 'Mahabharata Wisdom Sag - Ultra Optimized') {
           backendReady.value = true
           return true
         }
@@ -558,7 +558,7 @@ async function fetchExamples() {
             "Why did the Pandavas have to go live in the forest for 12 years?",
             "Why was Arjuna considered an unbeatable and undefeated warrior?",
             "What was the role of Krishna during the Kurukshetra war? Did he fight?",
-            "Describe the relationship between Karna and Kunti. How did it affect the war?",
+            "What were all the battles between Karna and Arjuna, and who won or lost each one?",
             "What were Arjuna’s greatest battles?",
             "What was Draupadi’s greatest strength?",
             "Why did Bhishma take a vow of celibacy, and how did that impact the throne of Hastinapur?",

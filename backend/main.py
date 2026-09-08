@@ -318,7 +318,7 @@ def keep_alive():
         time.sleep(900)
 
 app = FastAPI(
-    title="Mahabharata Wisdom Sage AI - Ultra Optimized",
+    title="Mahabharata Wisdom Sag - Ultra Optimized",
     version="3.0.0",
     lifespan=lifespan
 )
@@ -348,7 +348,7 @@ class AudioRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Mahabharata Wisdom Sage AI - Ultra Optimized"}
+    return {"message": "Mahabharata Wisdom Sag - Ultra Optimized"}
 
 @app.get("/health")
 async def health_check():
@@ -421,14 +421,14 @@ async def get_examples():
         "examples": [
             "Why did the Mahabharata war happen?",
             "Who was Satyaki?",
-            "Why did the Pandavas have to go live in the forest for 12 years?",
+            "What were all the battles between Karna and Arjuna, and who won or lost each one?",
             "Why was Arjuna considered an unbeatable and undefeated warrior?",
             "What was the role of Krishna during the Kurukshetra war? Did he fight?",
-            "Describe the relationship between Karna and Kunti. How did it affect the war?",
             "What were Arjuna’s greatest battles?",
-            "What was Draupadi’s greatest strength?",
-            "Why did Bhishma take a vow of celibacy, and how did that impact the throne of Hastinapur?",
             "How powerful was Abhimanyu against twenty warriors?",
+            "What was Draupadi’s greatest strength?",
+            "Why did Bhishma take a vow of celibacy, and how did that impact the throne of Hastinapur?"
+            
         ]
     }
 
