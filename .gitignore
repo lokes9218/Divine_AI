@@ -1,4 +1,6 @@
 # Environment variables
+
+author-change.py
 .env
 .env.local
 .env.*.local
@@ -117,6 +119,7 @@ coverage/
 *.backup
 
 # Local development files
+author-change.py
 11labs.py
 sarvam.py
 
