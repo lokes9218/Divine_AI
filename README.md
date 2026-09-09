@@ -495,12 +495,6 @@ git push origin feature/YourFeature
 
 6. Create a pull request.
 
-## 📄 License
-
-This project is licensed under the **Apache License 2.0**.
-
-See the `LICENSE` file for more information.
-
 ## 🙏 Acknowledgements
 
 Special thanks to the technologies and tools that made this project possible:
