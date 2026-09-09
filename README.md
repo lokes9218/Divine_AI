@@ -159,8 +159,6 @@ The project includes a Cypher script for loading the Mahabharata data:
 backend/mahabharata-db-setup.cypher
 ```
 
-## 🤖 AI Integration
-
 ### Google Gemini
 
 Google Gemini is used for advanced language processing and AI-generated responses.
