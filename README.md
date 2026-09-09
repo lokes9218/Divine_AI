@@ -494,22 +494,3 @@ git push origin feature/YourFeature
 6. Create a pull request.
 
 ## 🙏 Acknowledgements
-
-Special thanks to the technologies and tools that made this project possible:
-
-- **Google Gemini** – AI-powered language processing.
-- **Neo4j** – Graph database and knowledge graph.
-- **FastAPI** – Backend API framework.
-- **Nuxt.js** – Frontend framework.
-- **Tailwind CSS** – UI styling.
-- **Sarvam AI** – Tamil translation and text-to-speech.
-
-## ⭐ Support
-
-If you find **Mahabharata Wisdom Mentor** helpful, please give the repository a star!
-
----
-
-**Mahabharata Wisdom Mentor**  
-*Explore the epic. Understand the relationships. Discover the wisdom.*
-**DONE BY LOKESWARAN S**
