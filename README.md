@@ -159,8 +159,6 @@ The project includes a Cypher script for loading the Mahabharata data:
 backend/mahabharata-db-setup.cypher
 ```
 
-## 🤖 AI Integration
-
 ### Google Gemini
 
 Google Gemini is used for advanced language processing and AI-generated responses.
@@ -495,12 +493,6 @@ git push origin feature/YourFeature
 
 6. Create a pull request.
 
-## 📄 License
-
-This project is licensed under the **Apache License 2.0**.
-
-See the `LICENSE` file for more information.
-
 ## 🙏 Acknowledgements
 
 Special thanks to the technologies and tools that made this project possible:
@@ -520,3 +512,4 @@ If you find **Mahabharata Wisdom Mentor** helpful, please give the repository a 
 
 **Mahabharata Wisdom Mentor**  
 *Explore the epic. Understand the relationships. Discover the wisdom.*
+**DONE BY LOKESWARAN S**
