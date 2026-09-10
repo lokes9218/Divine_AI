@@ -1,5 +1,5 @@
 # Environment variables
-
+backend
 author-change.py
 .env
 .env.local
@@ -7,6 +7,9 @@ author-change.py
 frontend/.env
 frontend/.env.local
 frontend/.env.*.local
+backend/.env
+backend/.env.local
+backend/.env.*.local
 
 # Credentials and API keys
 sid-sandbox-369614-00f614ffd543.json
